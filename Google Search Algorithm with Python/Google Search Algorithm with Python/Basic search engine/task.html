@@ -1,0 +1,33 @@
+<div class="step-text">
+<p></p><h5 id="description">Description</h5><p>Read the information about the network from the Standard Input in the following format:</p><ul><li><p>an integer n specifying how many websites are in the network;</p></li><li><p>n strings separated by spaces which are the names of the websites;</p></li><li><p>n by n matrix of floats representing a link matrix for the internet;</p></li><li><p>a string which is a query for the search, a name of a website to look for.</p></li></ul><p>The result of the program should be the top 5 matched websites for the query which are determined by these rules:</p><ul><li><p>If there is a website that <u>exactly</u> matches the query (including partial match), it should go to the top of the list.</p></li><li><p>Other websites are sorted according to the PageRank in descending order.</p></li><li><p>In case there is a tie between two websites' PageRanks, a tie should be broken by reverse alphabetical order. (ie., if site "vk" has PageRank = 16.2 and "twitter" also has 16.2, then "vk" should be listed higher) </p></li></ul><p>The damping parameter for calculating the page rank should be 0.5. If there are fewer than 5 websites on the internet, you should return as many as there are.</p><h5 id="examples">Examples</h5><p><strong>Example 1</strong></p><p>Input:</p><pre><code class="language-no-highlight">5
+google facebook vk twitter instagram
+0.2 0.0 0.0 0.5 0.5
+0.2 1.0 0.0 0.0 0.0
+0.2 0.0 0.5 0.0 0.0
+0.2 0.0 0.5 0.0 0.0
+0.2 0.0 0.0 0.5 0.5
+instagram</code></pre><p>The rank for the websites will be roughly the following:</p><table border="1" cellpadding="1" cellspacing="1"><tbody><tr><td><p>google</p></td><td><p>21.6</p></td></tr><tr><td><p>facebook</p></td><td><p>24.3</p></td></tr><tr><td><p>vk</p></td><td><p>16.2</p></td></tr><tr><td><p>twitter</p></td><td><p>16.2</p></td></tr><tr><td><p>instagram</p></td><td><p>21.6</p></td></tr></tbody></table><p>Output:</p><pre><code class="language-no-highlight">instagram
+facebook
+google
+vk
+twitter</code></pre><p><strong>Example 2</strong></p><p>Input:</p><pre><code class="language-no-highlight">3
+google facebook vk
+0 0.333 0
+1 0.333 0
+0 0.333 1
+facebook</code></pre><p>The rank for the websites will be roughly the following:</p><table border="1" cellpadding="1" cellspacing="1"><tbody><tr><td><p>google</p></td><td><p>22.2</p></td></tr><tr><td><p>facebook</p></td><td><p>33.3</p></td></tr><tr><td><p>vk</p></td><td><p>44.4</p></td></tr></tbody></table><p>Output:</p><pre><code class="language-no-highlight">facebook
+vk
+google</code></pre><p><strong> Example 3</strong></p><p>Input:</p><pre><code class="language-no-highlight">6
+google facebook vk twitter instagram jetbrains
+0.2 0.0 0.0 0.5 0.5 0.0
+0.2 1.0 0.0 0.0 0.0 0.0
+0.2 0.0 0.5 0.0 0.0 0.0
+0.2 0.0 0.5 0.0 0.0 0.0
+0.2 0.0 0.0 0.5 0.5 0.0
+0.0 0.0 0.0 0.0 0.0 1.0
+jetbrains</code></pre><p>The rank for the websites will be roughly the following:</p><table border="1" cellpadding="1" cellspacing="1" style="width: 150px;"><tbody><tr><td><p>google</p></td><td><p>18.0</p></td></tr><tr><td><p>facebook</p></td><td><p>20.3</p></td></tr><tr><td><p>vk</p></td><td><p>13.5</p></td></tr><tr><td><p>twitter</p></td><td><p>13.5</p></td></tr><tr><td><p>instagram</p></td><td><p>18.0</p></td></tr><tr><td><p>jetbrains</p></td><td><p>16.7</p></td></tr></tbody></table><p><br/>Output (Note - in this case, twitter wasn't printed because it tied with vk in PageRank, but vk is lower in the alphabet. Only 5 sites can be printed, so twitter doesn't make the cutoff):</p><pre><code class="language-no-highlight">jetbrains
+facebook
+instagram
+google
+vk</code></pre>
+</div>

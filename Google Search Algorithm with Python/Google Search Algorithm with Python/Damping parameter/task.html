@@ -1,0 +1,70 @@
+<div class="step-text">
+<h5 id="theory" style="text-align: center;">Theory</h5>
+<p>The system we'd just studied converged fairly quickly to the correct answer. Let's consider an extension to our micro-internet where things start to go wrong.</p>
+<p>Say a new website is added to the micro-internet: George's Website. This website is linked to by FaceArea and only links to itself.</p>
+<p style="text-align: center;"><picture><source media="(max-width: 480px)" srcset="https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/480x/-/format/webp/ 1x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/960x/-/format/webp/ 2x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/1440x/-/format/webp/ 3x" type="image/webp"/><source media="(max-width: 800px)" srcset="https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/800x/-/format/webp/ 1x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/1600x/-/format/webp/ 2x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/2400x/-/format/webp/ 3x" type="image/webp"/><source srcset="https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/1100x/-/format/webp/ 1x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/2200x/-/format/webp/ 2x,https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/-/stretch/off/-/resize/3000x/-/format/webp/ 3x" type="image/webp"/><img alt="PageRank project: George's Website is linked to by FaceArea and only links to itself." height="310" name="7_nodes_internet.png" src="https://ucarecdn.com/7e8dd017-32cc-47c6-b7b0-c2736b1f0a4c/" width="470"/></picture></p>
+<p>Intuitively, only FaceArea, which is in the bottom half of the page rank, links to this website amongst the two others it links to, so we might expect George's site to have a correspondingly low PageRank score.</p>
+<p>Build the new L matrix, call it L2 to distinguish it from the previous stage's L matrix, for the expanded micro-internet, and use Power-Iteration on the <span class="math-tex">\(r\)</span> vector. Observe what happens.</p>
+<p>Complete the matrix L2 below. After completing it print the L2 row-by-row with a precision of 3 decimal places.</p>
+<pre><code class="language-python"># We'll call this one L2, to distinguish it from the previous L.
+# Recall that the missing column is L(F-&gt;A), L(F-&gt;B), ..., L(F-&gt;G)
+L2 = np.array([
+    [0,   1/2, 1/3, 0, 0,   ???, 0 ],
+    [1/3, 0,   0,   0, 1/2, ???, 0 ],
+    [1/3, 1/2, 0,   1, 0,   ???, 0 ],
+    [1/3, 0,   1/3, 0, 1/2, ???, 0 ],
+    [0,   0,   0,   0, 0,   ???, 0 ],
+    [0,   0,   1/3, 0, 0,   ???, 0 ],
+    [0,   0,   0,   0, 0,   ???, 1 ]
+])</code></pre>
+<p>Calculate page rank with the Power-Iteration method which you've implemented in the previous stage. Apply the iteration method so that the difference between the <span class="math-tex">\(r_{_{i}}\)</span> and <span class="math-tex">\(r_{_{i+1}}\)</span> is less or equal to 0.01 and print the vector with a precision of 3 decimal places.</p>
+<p>That's no good! George seems to be taking all the traffic on the micro-internet, and somehow coming at the top of the PageRank. This is understandable because once a user gets to George's Website, they can't leave, as all links head back to George.</p>
+<p>To combat this, we can add a small probability that the users don't follow any link on a webpage, but instead, visit a website on the micro-internet at random. We'll say the probability of them following a link is d and the probability of choosing a random website is therefore 1−d . We can use a new matrix to work out where the user is going each minute.</p>
+<p style="text-align: center;"><span class="math-tex">\(M = dL_{_2} + \frac{1-d}{n}J\)</span></p>
+<p>Where</p>
+<p><strong>d</strong> is Damping Factor;</p>
+<p><strong>M</strong> is a new matrix that adds the probability of a random visit to a page that the current page doesn’t contain links to;</p>
+<p><strong>L2</strong> is our undamped matrix, from above;</p>
+<p><strong>n</strong> is a number of sites on micro-internet (dimension of a matrix);</p>
+<p>and <strong>J</strong> is a matrix where every element is 1.</p>
+<p> </p>
+<p>Here are the ways you can do arithmetic operations between matrices and numbers:</p>
+<ul>
+<li>To create a 7 by 7 matrix where every element is 1, you can use the <code class="language-python">np.ones((7,7))</code> method;</li>
+<li>To multiply a matrix by a number (scalar, integer), you can use the familiar arithmetic operation. For example, you can multiply each element of matrix L by 0.5 this way:  <code class="language-python">L * 0.5</code></li>
+<li>To add up the corresponding elements of matrices, use this simple formula:  <code class="language-python">A + B</code></li>
+</ul>
+<p> </p>
+<p>If <strong>d</strong> is one, we have the case we had previously, whereas if <strong>d</strong> is zero, we will always visit a random webpage and therefore all webpages will be equally likely and equally ranked. For this extension to work best, <strong>1−d</strong> should be somewhat small, though we won't discuss how small exactly.</p>
+<p>From the mathematical perspective, we are adding a slight probability of jumping to a random website, without having a link to it on the current site. That probability is inversely related to the parameter <strong>d</strong>, in other words, the less <strong>d</strong> is, the higher is the probability of jumping to a random page.</p>
+<p>Now, calculate PageRank for the network using the Power-Iteration method with a damping parameter d = 0.5 and precision 0.01. Make sure you're now using matrix M instead of L2 so that we obtain the result of the damped system. Print the resulting PageRank.</p>
+<p>This is certainly better, the PageRank gives sensible numbers for the users that end up on each webpage. However, this method still predicts that George has a high ranking webpage. This could be seen as a consequence of using a small network. We could also get around the problem by not counting self-links when producing the L matrix (and if a website has no outgoing links, make it link to all websites equally). We won't look further down this route, as this is in the realm of improvements to PageRank, rather than eigenproblems.</p>
+<p>You are now in a good position, having gained an understanding of PageRank, to produce your own code to calculate the PageRank of a website with thousands of entries.</p>
+<p>Good Luck!</p>
+<h5 id="example" style="text-align: center;">Example</h5>
+<p>Example of the program output on this stage - first, we print out L2, then the PageRank vector without damping (ie., the result of Power Iteration using L2), and finally the PageRank vector with damping (ie., the result using M). Note that this is provided as a formatting reference - your numbers will be not equal to these:</p>
+<pre><code class="language-no-highlight">0.000 0.500 0.333 0.000 0.000 100.000 0.000
+0.333 0.000 0.000 0.000 0.500 100.000 0.000
+0.333 0.500 0.000 1.000 0.000 100.000 0.000
+0.333 0.000 0.333 0.000 0.500 100.000 0.000
+0.000 0.000 0.000 0.000 0.000 100.000 0.000
+0.000 0.000 0.333 0.000 0.000 100.000 0.000
+0.000 0.000 0.000 0.000 0.000 100.000 1.000
+
+15.000
+15.000
+15.000
+15.000
+15.000
+25.000
+35.000
+
+15.000
+15.000
+15.000
+15.000
+15.000
+25.000
+35.000
+</code></pre>
+</div>

@@ -1,0 +1,48 @@
+hyperskill_project:
+  id: 452
+  ide_files: https://cogniterra.org/media/attachments/lesson/38342/additional_files.json
+  is_template_based: false
+  use_ide: true
+  environment: unittest
+update_date: "Wed, 12 Jun 2024 21:11:55 UTC"
+stages:
+  - id: 2617
+    step: 45555
+    is_completed: true
+  - id: 2618
+    step: 45556
+    is_completed: true
+  - id: 2619
+    step: 45557
+    is_completed: true
+  - id: 2620
+    step: 45558
+    is_completed: true
+topics:
+  0:
+    - title: Introduction to Generative AI and LLMs
+      theory_id: 44033
+    - title: General limitations of LLMs
+      theory_id: 43801
+    - title: Introduction to Prompt Engineering
+      theory_id: 43279
+    - title: Zero-shot and Few-shot prompting
+      theory_id: 45098
+    - title: Introduction to OpenAI API
+      theory_id: 43699
+    - title: GPT Playground and Model Settings
+      theory_id: 45368
+    - title: Working with Assistants (and tools)
+      theory_id: 45396
+  1:
+    - title: Chain-of-Thought prompting
+      theory_id: 44767
+    - title: "Problem decomposition prompting (LtM, PaS, PoTh)"
+      theory_id: 44657
+    - title: Reason and Act (ReAct) prompting
+      theory_id: 45335
+    - title: Function calls with chat completions
+      theory_id: 45477
+  2:
+    - title: Prompting to debug and fix AI-generated code
+      theory_id: 45559

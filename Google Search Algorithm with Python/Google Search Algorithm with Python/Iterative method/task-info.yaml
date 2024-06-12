@@ -1,0 +1,88 @@
+type: edu
+files:
+  - name: pagerank/pagerank.py
+    visible: true
+    text: |
+      print('Hello World!')
+    learner_created: false
+  - name: test/__init__.py
+    visible: false
+    learner_created: false
+  - name: test/tests.py
+    visible: false
+    text: |
+      import numpy as np
+      
+      from hstest.stage_test import *
+      
+      CheckResult.correct = lambda: CheckResult(True, '')
+      CheckResult.wrong = lambda feedback: CheckResult(False, feedback)
+      
+      
+      class Stage2Test(StageTest):
+          def generate(self) -> List[TestCase]:
+              return [TestCase()]
+      
+          def check(self, reply, attach) -> CheckResult:
+              res = reply.split()
+              if len(res) != (6 + 6 + 6):
+                  return CheckResult.wrong("Your program should output three page rank vectors so 18 numbers")
+              n = 6
+              L = np.array([[0, 1 / 2, 1 / 3, 0, 0, 0],
+                            [1 / 3, 0, 0, 0, 1 / 2, 0],
+                            [1 / 3, 1 / 2, 0, 1, 0, 1 / 2],
+                            [1 / 3, 0, 1 / 3, 0, 1 / 2, 1 / 2],
+                            [0, 0, 0, 0, 0, 0],
+                            [0, 0, 1 / 3, 0, 0, 0]])
+              pr_iter1 = [13.889, 13.889, 38.889, 27.778, 0.000, 5.556]
+              pr_iter10 = [15.945, 5.348, 40.106, 25.325, 0.000, 13.275]
+              pr_precision = [16.000, 5.333, 40.000, 25.333, 0.000, 13.333]
+              eps = 1e-2
+              # 1
+              pr = []
+              for i in range(n):
+                  try:
+                      el = float(res[i])
+                  except ValueError:
+                      return CheckResult.wrong("Your program outputted something which is not a number!")
+                  pr.append(el)
+              for i in range(n):
+                  if abs(pr[i] - pr_iter1[i]) > eps:
+                      return CheckResult.wrong("The first Page Rank in your output is incorrect.")
+              # 2
+              for i in range(n):
+                  try:
+                      pr[i] = float(res[n + i])
+                  except ValueError:
+                      return CheckResult.wrong("Your program outputted something which is not a number!")
+              for i in range(n):
+                  if abs(pr[i] - pr_iter10[i]) > eps:
+                      return CheckResult.wrong("The second Page Rank you outputted is incorrect.")
+              # 3
+              for i in range(n):
+                  try:
+                      pr[i] = float(res[2 * n + i])
+                  except ValueError:
+                      return CheckResult.wrong("Your program outputted something which is not a number!")
+              for i in range(n):
+                  if abs(pr[i] - pr_precision[i]) > eps:
+                      return CheckResult.wrong("The third Page Rank you outputted is incorrect.")
+              return CheckResult.correct()
+      
+      
+      if __name__ == '__main__':
+          Stage2Test('pagerank.pagerank').run_tests()
+    learner_created: false
+  - name: tests.py
+    visible: false
+    text: |-
+      from test.tests import Stage2Test
+      
+      if __name__ == '__main__':    Stage2Test('pagerank.pagerank').run_tests()
+    learner_created: false
+feedback_link: https://hyperskill.org/projects/92/stages/511/implement#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Wed, 15 May 2024 07:57:22 UTC"
+record: 2

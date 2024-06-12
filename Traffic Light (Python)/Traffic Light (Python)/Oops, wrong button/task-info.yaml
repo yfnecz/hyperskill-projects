@@ -1,0 +1,182 @@
+type: edu
+files:
+  - name: traffic_light.py
+    visible: true
+    text: |
+      print("Hello World!")
+    learner_created: false
+  - name: test/__init__.py
+    visible: false
+    learner_created: false
+  - name: test/tests.py
+    visible: false
+    text: |-
+      import re
+      from hstest import StageTest, CheckResult, WrongAnswer, TestedProgram, dynamic_test
+      
+      
+      def check_menu(lines, test_case):
+          ADD_INFO = f"Incorrect menu output in the following case: {test_case}. "
+          if len(lines) != 5:
+              raise WrongAnswer(f"{ADD_INFO}It should contain exactly 5 lines but there were {len(lines)} instead")
+          if "menu" not in lines[0]:
+              raise WrongAnswer(f"{ADD_INFO}First line should contain \"Menu\" substring")
+      
+          starts = ["1", "2", "3", "0"]
+          contain = ["Add", "Delete", "System", "Quit"]
+          for i in range(len(starts)):
+              if not lines[1 + i].startswith(starts[i]) or not contain[i].lower() in lines[1 + i]:
+                  raise WrongAnswer(
+                      f"The {i + 1} line of menu list should start with \"{starts[i]}\" as an option from list and " +
+                      f"contain \"{contain[i]}\" substring as in example")
+      
+      
+      class TrafficLightTest(StageTest):
+      
+          @dynamic_test
+          def test_initial_and_menu(self):
+              pr = TestedProgram()
+              output = pr.start().lower()
+              lines = re.split(r"[\r\n]+", output.strip())
+      
+              if len(lines) != 2:
+                  return CheckResult.wrong("There should be exactly 2 lines in the output when the program just started, " +
+                                           f"but there were {len(lines)} instead")
+      
+              if ("welcome" not in lines[0]) or ("traffic management system" not in lines[0]):
+                  return CheckResult.wrong("The first line of output should contain a greeting, as in example")
+              if ("input" not in lines[1]) or ("number" not in lines[1]):
+                  return CheckResult.wrong("When the program just started, there should be a line, that asks user to input " +
+                                           "number of roads with \"Input\" and \"Number\" substrings")
+      
+              output = pr.execute("5").lower()
+              lines = re.split(r"[\r\n]+", output.strip())
+      
+              if len(lines) != 1:
+                  return CheckResult.wrong("There should be exactly 1 line printed when the user inputted desired number " +
+                                           f"of roads, but there were {len(lines)} instead")
+              if ("input" not in lines[0]) or ("interval" not in lines[0]):
+                  return CheckResult.wrong("When the user provided number of roads, there should be a line, that asks user " +
+                                           "to input interval value with \"Input\" and \"Interval\" substrings")
+      
+              output = pr.execute("3").lower()
+              check_menu(re.split(r"[\r\n]+", output.strip()), "Start of the program")
+      
+              pr.execute("0")
+              if not pr.is_finished():
+                  return CheckResult.wrong("When user inputted '0' as a desired option, program should finish it's execution")
+      
+              return CheckResult.correct()
+      
+          stubs = [["1", "add"], ["2", "delete"], ["3", "system"]]
+      
+          @dynamic_test(data=stubs)
+          def test_stubs_and_quit(self, option, stub_contain):
+              pr = TestedProgram()
+              pr.start()
+              pr.execute("5")
+              pr.execute("3")
+      
+              output = pr.execute(option).lower()
+              lines = re.split(r"[\r\n]+", output.strip())
+      
+              if len(lines) != 1 or stub_contain not in lines[0]:
+                  return CheckResult.wrong(f"For \"{option}\" option on current stage there should be a simple one-line " +
+                                           f"stub, containing \"{stub_contain}\" substring, followed by input to return back to menu")
+      
+              output = pr.execute("").lower()
+              check_menu(re.split(r"[\r\n]+", output.strip()), f"Stub for \"{option}\" option shown and blank input provided")
+      
+              if pr.is_finished():
+                  return CheckResult.wrong("Option's selection should be looped")
+              pr.execute("0")
+              if not pr.is_finished():
+                  return CheckResult.wrong("When user inputted '0' as a desired option, program should finish it's execution")
+      
+              return CheckResult.correct()
+      
+          @dynamic_test
+          def test_incorrect_initial(self):
+              pr = TestedProgram()
+              pr.start()
+      
+              for ex in ["asd", "-1", "6-", "0", "Hello world!"]:
+                  output = pr.execute(ex).lower()
+                  lines = re.split(r"[\r\n]+", output.strip())
+                  if len(lines) != 1 or "incorrect input" not in lines[0] or "again" not in lines[0]:
+                      return CheckResult.wrong(
+                          "When the user provides incorrect input for number of roads (<=0 or not numeric),"
+                          " there should be printed exactly one line, containing \"incorrect input\" and " +
+                          "\"again\" substrings, followed by new input for number of roads")
+              output = pr.execute("5").lower()
+              lines = re.split(r"[\r\n]+", output.strip())
+      
+              if len(lines) != 1:
+                  return CheckResult.wrong(
+                      "There should be exactly 1 line printed when the user inputted desired number of roads, " +
+                      f"but there were {len(lines)} instead")
+              if ("input" not in lines[0]) or ("interval" not in lines[0]):
+                  return CheckResult.wrong("When the user provided number of roads, there should be a line, that asks user " +
+                                           "to input interval value with \"Input\" and \"Interval\" substrings")
+      
+              for ex in ["asd", "-1", "6-", "0", "Hello world!"]:
+                  output = pr.execute(ex).lower()
+                  lines = re.split(r"[\r\n]+", output.strip())
+                  if len(lines) != 1 or "incorrect input" not in lines[0] or "again" not in lines[0]:
+                      return CheckResult.wrong(
+                          "When the user provides incorrect input for interval value (<=0 or not numeric),"
+                          " there should be printed exactly one line, containing \"incorrect input\" and " +
+                          "\"again\" substrings, followed by new input for interval value")
+      
+              output = pr.execute("5").lower()
+              check_menu(re.split(r"[\r\n]+", output.strip()),
+                         "Start of the program after correct input for initial settings")
+      
+              pr.execute("0")
+              if not pr.is_finished():
+                  return CheckResult.wrong("When user inputted '0' as a desired option, program should finish it's execution")
+      
+              return CheckResult.correct()
+      
+          @dynamic_test
+          def test_incorrect_options(self):
+              pr = TestedProgram()
+              pr.start()
+              pr.execute("5")
+              pr.execute("3")
+      
+              for ex in ["asd", "-1", "6-", "Hello world!", "4", "-5"]:
+                  output = pr.execute(ex).lower()
+                  lines = re.split(r"[\r\n]+", output.strip())
+                  if len(lines) != 1 or "incorrect option" not in lines[0]:
+                      return CheckResult.wrong(
+                          "When the user provides incorrect input while choosing an option (not '1', '2' or " +
+                          "'3'), there should be printed exactly one line, containing \"incorrect option\" " +
+                          "substring, followed by input to return back to menu")
+      
+                  output = pr.execute("").lower()
+                  check_menu(re.split(r"[\r\n]+", output.strip()), "New iteration after incorrect input for option")
+      
+              pr.execute("0")
+              if not pr.is_finished():
+                  return CheckResult.wrong("When user inputted '0' as a desired option, program should finish it's execution")
+      
+              return CheckResult.correct()
+      
+      
+      if __name__ == '__main__':
+          TrafficLightTest().run_tests()
+    learner_created: false
+  - name: tests.py
+    visible: false
+    text: |-
+      from test.tests import TrafficLightTest
+      
+      if __name__ == '__main__':    TrafficLightTest().run_tests()
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/29125#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Mon, 20 May 2024 19:22:27 UTC"
+record: 3

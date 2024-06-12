@@ -1,0 +1,49 @@
+<div class="step-text">
+<h5 id="theory" style="text-align: center;">Theory</h5>
+<p>PageRank allows us to predict the number of users that we expect to find on each website after a long time. Putting them in order of popularity (based on this metric), the PageRank of this micro-internet is:</p>
+<p><strong>C</strong>owRome (40.000), <strong>D</strong>roid (25.333), <strong>A</strong>pricot (16.000), <strong>F</strong>aceArea (13.333), <strong>B</strong>errysee (5.333), <strong>e</strong>Sales (0.000)</p>
+<p>In principle, we could use a linear algebra library, as in the previous stage, to calculate the eigenvalues and vectors. And this would work for a small system. But this gets unmanageable for large systems. And since we only care about the principal eigenvector (the one with the largest eigenvalue, which will be 1 in this case), we can use the power <em style="font-size: inherit;">iteration method</em> which will scale better, and is faster for large systems. Referring back to the micro-internet diagram, is this what you would have expected? Convince yourself that ranking the importance of the websites based on other websites which link to them is a sensible decision. Here's the diagram again, for convenience: </p>
+<div style="text-align: center;">
+<figure class="image" style=""><img alt="PageRank: micro-internet diagram" height="366" src="https://ucarecdn.com/1137fbbc-2204-4fc9-b829-389f9450c655/-/crop/1394x909/145,96/-/preview/" width="562"/>
+<figcaption><strong>C</strong>owRome (40.000), <strong>D</strong>roid (25.333), <strong>A</strong>pricot (16.000), <strong>F</strong>aceArea (13.333), <strong>B</strong>errysee (5.333), <strong>e</strong>Sales (0.000)</figcaption>
+</figure>
+</div>
+<p>Let's now try to get the same result using the Power-Iteration method. This method will be much better at dealing with large systems.</p>
+<p>First let's set up our initial vector,  <span class="math-tex">\(r_{_{0}}\)</span>, so that we have our 100 users equally distributed on each of our 6 websites (note that this usually results in a non-integer number of users on each site - that's ok).</p>
+<pre><code class="language-python">r = 100 * np.ones(6) / 6</code></pre>
+<p>One iteration would look like this:</p>
+<pre><code class="language-python">r = L @ r  # operator ‘@’ does matrix multiplication</code></pre>
+<h5 id="objectives" style="text-align: center;">Objectives</h5>
+<p>You need to:</p>
+<p>1. Apply one step of the iteration method and print the vector with a precision of 3 decimal places.<br/>
+2. Apply the iteration method 10 more times (bringing the total to 11) and print the vector with a precision of 3 decimal places.<br/>
+3. Stop the iteration when the magnitude of the difference vector between the <span class="math-tex">\(r_{_{i}}\)</span> and <span class="math-tex">\(r_{_{i+1}}\)</span> becomes smaller than 0.01 (see code below) and print the vector with a precision of 3 decimal places.</p>
+<p>To check the difference between the <span class="math-tex">\(r_{_{i}}\)</span> and <span class="math-tex">\(r_{_{i+1}}\)</span> use the norm:</p>
+<pre><code class="language-python">import numpy.linalg as la
+la.norm(r_prev - r_next)</code></pre>
+<p>If you add counting the number of iterations you will see how the PageRank order is established fairly quickly, and the vector converges on the value we calculated earlier after a few tens of repeats. Note that this counting isn't to be included in the final output. </p>
+<p>Also note that the code from Stage 1 which prints L matrix and calculates PageRank using eigenvector method is not needed here - you can comment it out to make sure it doesn't interfere with this stage.</p>
+<p>Congratulations! You've just calculated your first PageRank!</p>
+<h5 id="example" style="text-align: center;">Example</h5>
+<p>Example of your program output for this stage (6 numbers for each part). Note that your output isn't supposed to match this exactly - this example was generated with a slightly different set of numbers.</p>
+<pre><code class="language-no-highlight">13.889
+19.444
+30.556
+25.000
+5.556
+5.556
+
+16.965
+11.330
+33.973
+22.641
+3.781
+11.310
+
+16.981
+11.321
+33.962
+22.642
+3.774
+11.321</code></pre>
+</div>

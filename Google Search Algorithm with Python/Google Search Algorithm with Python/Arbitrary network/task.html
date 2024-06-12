@@ -1,0 +1,26 @@
+<div class="step-text">
+<h5 id="description" style="text-align: center;">Description</h5>
+<p>Here you will be asked to produce a function that can calculate the PageRank for an arbitrarily large probability matrix. </p>
+<p>Complete this function to provide the PageRank for an arbitrarily sized internet i.e. the principal eigenvector of the damped system using the power iteration method. The function's inputs are the <code class="language-java">link_matrix</code>, and <code class="language-java">d</code> the damping parameter, as shown in the following snippet. (The damping parameter, d, will be passed as an argument, you do not need to set this yourself.) Precision of iteration method should be as in the previous stage, 0.01.</p>
+<pre><code class="language-java">def pagerank(link_matrix, d):
+    n = link_matrix.shape[0]
+    ...
+</code></pre>
+<p>Read the matrix from the Standard Input and a parameter d and output its PageRank with the pagerank method with a precision of 3 decimal places.</p>
+<h5 id="example" style="text-align: center;">Example</h5>
+<p><strong>Input:</strong></p>
+<p>The first line contains two numbers n and d where n is the dimension of the matrix, an integer, and d is a damping parameter, a float. The next n lines contain n floats on each line representing a matrix row-by-row.</p>
+<pre><code class="language-no-highlight">5 0.15
+0.2 0.2 0.0 0.0 0.0
+0.2 0.2 0.0 1.0 0.0
+0.2 0.2 1.0 0.0 0.0
+0.2 0.2 0.0 0.0 0.0
+0.2 0.2 0.0 0.0 1.0</code></pre>
+<p><strong>Output:</strong></p>
+<p>Your program should print the PageRank for the matrix and damping parameter input from the Standard Input, displaying three decimal places similar to this:</p>
+<pre><code class="language-no-highlight">18.172
+20.898
+21.379
+18.172
+21.379</code></pre>
+</div>

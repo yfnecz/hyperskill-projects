@@ -1,0 +1,78 @@
+<div class="step-text">
+<h5 id="description" style="text-align: center;">Description</h5>
+<p>PageRank (developed by Larry Page and Sergey Brin) revolutionized web search by generating a ranked list of web pages based on the underlying connectivity of the web. The PageRank algorithm is based on an ideal random web surfer who, when reaching a page, goes to the next page by clicking on a link. The surfer has an equal probability of clicking any link on the page and, when reaching a page with no links, has an equal probability of moving to any other page by typing in its URL. In addition, the surfer may occasionally choose to type in a random URL instead of following the links on a page. The PageRank is the ranked order of the pages from the most to the least probable page the surfer will be viewing.</p>
+<p>To better understand how a google search works, watch <a href="https://www.youtube.com/watch?v=qxEkY8OScYY&amp;ab_channel=ZachStar" rel="noopener noreferrer nofollow" target="_blank">this video</a>.</p>
+<p><strong>PageRank as a linear algebra problem</strong></p>
+<p>Let's imagine a micro-internet, with just 6 websites (<strong>A</strong>pricot, <strong>B</strong>errysee, <strong>C</strong>owRome,<strong> D</strong>roid, <strong>e</strong>Sales, and <strong>F</strong>aceArea). Each website links to some of the others, and this forms a network as shown,</p>
+<p style="text-align: center;"><img alt="PageRank project: micro-internet with 6 websites. Each website links to some of the others" height="456" src="https://ucarecdn.com/a074fc2e-97af-49ac-88e6-b482580508b8/-/crop/1437x937/121,79/-/preview/" width="700"/></p>
+<p>The main idea behind the algorithm of PageRank is that the importance of the website is estimated according to the number and quality of links that refer to it. This somewhat recursive principle will form the basis of our thinking.</p>
+<p>Imagine we have 100 users on our micro-internet, each viewing a single website at a time. Each minute, the users follow a link on their website to another site on the micro-internet. After a while, the websites that are most linked to will have more users visiting them, and in the long run, each minute for every user that leaves a website, another will enter keeping the total numbers of users on each website constant. The PageRank is simply the ranking of websites by how many users they have on them at the end of this process.</p>
+<p>We represent the number of users on each website with the vector,</p>
+<p style="text-align: center;"><span class="math-tex">\(r = \begin{pmatrix} r_A \\ r_B \\ r_C \\ r_D \\ r_E \\ r_F \end{pmatrix}\)</span></p>
+<p>We need a way to calculate the number of users each website will have on it at the next minute (the "i+1" minute) based on the current minute (minute "i"). Intuitively, we can say that the number of users on Website A at the next minute is determined by the sum:</p>
+<p style="text-align: center;">(Probability of a user on A returning to A) * (Number of users on A now) + (Probability of a user on B going to A) * (Number of users on B now) + … + (Probability of a user on F going to A) * (Number of users on F now) </p>
+<p>or, in a more abbreviated form, and using "L" to represent the probabilities:</p>
+<p style="text-align: center;"><span class="math-tex">\(r_{_{A(i+1)}} = L_{_{A\to A}} r_{_{Ai}} + L_{_{B\to A}} r_{_{Bi}} + \cdots + L_{_{F\to A}} r_{_{Fi}}\)</span></p>
+<p>We can develop similar equations for every website, which we can then collect into a single matrix equation, like so:</p>
+<p style="text-align: center;"><span class="math-tex">\(r_{_{i+1}} = Lr_{_i}\)</span></p>
+<p>With the matrix L taking the form:</p>
+<p style="text-align: center;"><span class="math-tex">\(L = \begin{pmatrix} L_{A \rightarrow A} &amp; L_{B \rightarrow A} &amp; L_{C \rightarrow A} &amp; L_{D \rightarrow A} &amp; L_{E \rightarrow A} &amp; L_{F \rightarrow A} \\ L_{A \rightarrow B} &amp; L_{B \rightarrow B} &amp; L_{C \rightarrow B} &amp; L_{D \rightarrow B} &amp; L_{E \rightarrow B} &amp; L_{F \rightarrow B} \\ L_{A \rightarrow C} &amp; L_{B \rightarrow C} &amp; L_{C \rightarrow C} &amp; L_{D \rightarrow C} &amp; L_{E \rightarrow C} &amp; L_{F \rightarrow C} \\ L_{A \rightarrow D} &amp; L_{B \rightarrow D} &amp; L_{C \rightarrow D} &amp; L_{D \rightarrow D} &amp; L_{E \rightarrow D} &amp; L_{F \rightarrow D} \\ L_{A \rightarrow E} &amp; L_{B \rightarrow E} &amp; L_{C \rightarrow E} &amp; L_{D \rightarrow E} &amp; L_{E \rightarrow E} &amp; L_{F \rightarrow E} \\ L_{A \rightarrow F} &amp; L_{B \rightarrow F} &amp; L_{C \rightarrow F} &amp; L_{D \rightarrow F} &amp; L_{E \rightarrow F} &amp; L_{F \rightarrow F} \end{pmatrix}\)</span></p>
+<p>where the columns represent the probability (or <u><strong>L</strong></u>ikelihood, if you prefer) of leaving a website for any other website. The rows determine how likely you are to enter a website from any other, though these need not add to one. The long-term behavior of this system is when  <span class="math-tex">\(r_{_{i+1}} = r_{_i}\)</span>, so we'll drop the subscripts here, and that allows us to write,</p>
+<p style="text-align: center;"><span class="math-tex">\(Lr = r\)</span></p>
+<p>which is an eigenvector equation for the matrix  <strong>L</strong>, with eigenvalue 1. For any audio-visual learners, consider referring to <a href="https://www.youtube.com/watch?v=qxEkY8OScYY&amp;ab_channel=ZachStar" rel="noopener noreferrer nofollow" target="_blank">this video</a> for a walkthrough of how the L matrix is made and how PageRank works. The following animation might also be helpful to visualize where the numbers are coming from: </p>
+<p style="text-align: center;"><picture><img alt="PageRank project: visualize where the numbers are coming from" height="369" src="https://ucarecdn.com/186c1645-1d37-48d5-a5a8-f3be7cf1d5aa/" width="517"/></picture></p>
+<p>For the matrix <strong>L</strong>, the sum of all elements in each column equals 1. Such a matrix is called a <strong>Stochastic matrix</strong> (also referred to as <strong>Markov’s matrix</strong>), and one of its eigenvalues is guaranteed to equal 1.</p>
+<p>In this project you can use python's <code class="language-python">numpy</code> library for matrix calculations. You can look at <a href="https://numpy.org/doc/stable/user/quickstart.html#basic-operations" rel="noopener noreferrer nofollow" target="_blank">this tutorial</a> to learn basic operations with matrices.</p>
+<h5 id="objective" style="text-align: center;">Objective</h5>
+<p>Complete the matrix <strong>L</strong> below, that describes the micro-internet above, with just 6 websites. We've left out the column for which websites the FaceArea website (F) links to. Remember, this is the probability to click on another website from this one, so each column should add to one (by scaling by the number of links).</p>
+<pre><code class="language-python">import numpy as np
+import numpy.linalg as la
+
+L = np.array([
+    [0,   1/2, 1/3, 0, 0,   ??? ],
+    [1/3, 0,   0,   0, 1/2, ??? ],
+    [1/3, 1/2, 0,   1, 0,   ??? ],
+    [1/3, 0,   1/3, 0, 1/2, ??? ],
+    [0,   0,   0,   0, 0,   ??? ],
+    [0,   0,   1/3, 0, 0,   ??? ]
+])
+</code></pre>
+<p>You can use the following setup to print the matrix row-by-row with the precision of 3 decimal places.</p>
+<pre><code class="language-python">from io import StringIO
+s = StringIO()
+np.savetxt(s, L, fmt="%.3f")
+print(s.getvalue())</code></pre>
+<p>For calculating eigenvectors and eigenvalues you can use the following function:</p>
+<pre><code class="language-java">e_vals, e_vecs = la.eig(L)</code></pre>
+<p>The variable <code class="language-python">e_vals</code> is assigned a list of eigenvalues of matrix L.<br/>
+The variable <code class="language-python">e_vecs</code> is assigned the matrix whose columns are the eigenvectors corresponding to those eigenvalues.<br/>
+That way, the first e_vals element corresponds to the first e_vecs column, and so on.</p>
+<p>As you probably noticed, the first column of the <code class="language-python">e_vecs</code> matrix corresponds to the eigenvalue equal to 1. You can get it this way:<br/>
+<code class="language-python">vec = np.transpose(e_vecs)[0]</code></p>
+<p>This vector is in fact PageRank, but to make it the PageRank of our micro-internet,  we need to make sure that the sum of all <code class="language-python">vec</code> elements equals 100 since there are a hundred users in our micro-internet. How do you achieve that? Multiply each element of the vector by <code class="language-python">100/sum(vec)</code>, where <code class="language-python">sum(vec)</code> is the sum of all <code class="language-python">vec</code> elements. This process is called <strong>normalization</strong>.</p>
+<p>As a result of normalization, we get the PageRank for our system. Print this vector out after the L matrix, again showing three decimal places. Also, note that <code class="language-python">la.eig(L)</code> actually returns a vector of complex numbers, so ensure that you only print the real component by doing something like: <code class="language-python">vec[i].real</code> for each of the vector's elements.</p>
+<p>There is no need to understand how the algebraic method works, since, as mentioned above, we will use the <em>power-iteration method</em>.</p>
+<p></p><div class="alert alert-warning">In case you have the following error while running the tests:
+
+<pre><code class="language-no-highlight">RuntimeError: Polyfit sanity test emitted a warning, most likely due to using a buggy Accelerate backend. If you compiled yourself, see site.cfg.example for information. Otherwise report this to the vendor that provided NumPy.
+RankWarning: Polyfit may be poorly conditioned</code></pre>
+<p>Try to do the following operations in your virtual environment:</p>
+<pre><code class="language-no-highlight">pip3 uninstall numpy
+pip3 install –upgrade –only-binary :all: numpy</code></pre>
+<p></p></div>
+<h5 id="example" style="text-align: center;">Example</h5>
+<p>Example of an output of your program for this stage - note that your L matrix and eigenvector are going to be slightly different. In the diagram above, F doesn't even link to 3 websites as it does here - make sure you work out your own L matrix and use that to determine the correct output.</p>
+<pre><code class="language-no-highlight">0.000 0.500 0.333 0.000 0.000 0.000
+0.333 0.000 0.000 0.000 0.500 0.333
+0.333 0.500 0.000 1.000 0.000 0.000
+0.333 0.000 0.333 0.000 0.500 0.333
+0.000 0.000 0.000 0.000 0.000 0.333
+0.000 0.000 0.333 0.000 0.000 0.000
+
+16.981
+11.321
+33.962
+22.642
+3.774
+11.321</code></pre>
+</div>
